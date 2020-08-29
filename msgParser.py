@@ -2,6 +2,7 @@
 import json
 import os
 from pprint import pprint
+from modules import toHTML
 
 # Read from database
 with open('test.json','r') as dataFile:
@@ -74,26 +75,40 @@ class InstaProfile:
     def returnConversation(self, targetUser, conversationsList):
         adjustLen = len(targetUser) + 1
         convListLen = len(conversationsList)
-        with open('CNV-'+targetUser+'.txt', 'w') as convFile:
+        with open(targetUser+'-CNV.txt', 'w') as convTxtFile, open(targetUser+'-CNV.html', 'w') as convHtmlFile:
+            convHtmlFile.write( toHTML.initHeader(targetUser) )
             for i in range(convListLen):
                 conversation = conversationsList[i]
                 conversation.sort(key=self.get_ctu)
+
+                date_ymd = '-1' #Initialsing it so the if statement will be
+                #triggered for the first iteration of the for loop
+                # iterate through a list in reverse
                 for convItem in conversation:
                     if convItem['sender'] == self.currentUserName:
                         sender = 'X'
+                        posMsg = 'left'
                     else:
                         sender = convItem['sender']
-                        
+                        posMsg = 'right'
+
                     try:
                         msg = convItem['text']
                     except:
                         msg = '~~~'
-                        
+
+                    dateSent = convItem['created_at'][:16]
+
+                    old_date_ymd = date_ymd
+                    date_ymd = dateSent[:10]
+                    date_time= dateSent[11:16]
+                    if date_ymd > old_date_ymd:
+                        convHtmlFile.write( toHTML.dateSeperator(str(date_ymd)))
                     convLine = sender.ljust(adjustLen)+': '+ str(msg)
-                    convFile.write(convLine + '\n')
+                    convTxtFile.write(convLine + '\n')
+                    convHtmlFile.write( toHTML.writeMsg(str(posMsg), str(msg), date_time) )
+            convHtmlFile.write( toHTML.closeHTML() )
         print('Conversation with %s is created.' %(targetUser))
-
-
 
 
 
@@ -106,5 +121,7 @@ if __name__ == '__main__':
         currentUser.returnConversation(targetUser, conversationsList)
     else:
         print('"%s" is not found :(' % (targetUser))
-    currentUser.showCloseUsers()
 
+    resCU = input('Create close users?[y/N]')
+    if resCU == 'y':
+        currentUser.showCloseUsers()
