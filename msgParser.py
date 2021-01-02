@@ -9,12 +9,24 @@ with open('test.json','r') as dataFile:
     dataJSON = dataFile.read()
 data = json.loads(dataJSON)
 
+def main():
+    changeDir()
+    currentUser = InstaProfile()
+    targetUser = input('Type your target user: ')
+    userFound, conversationsList = currentUser.targetExists(targetUser)
+    if userFound == True:
+        currentUser.returnConversation(targetUser, conversationsList)
+    else:
+        print('"%s" is not found :(' % (targetUser))
+    # resCU = input('Create close users?[y/N]')
+    # if resCU == 'y':
+    # currentUser.showCloseUsers()
+
 def changeDir():
     cnvDir = os.getcwd() + '/conversations'
     if os.path.exists(cnvDir) == False:
         os.mkdir(cnvDir)
     os.chdir(cnvDir)
-
 
 class InstaProfile:
     def __init__(self):
@@ -30,8 +42,6 @@ class InstaProfile:
             return a
         else:
             return b
-
-
     # return if the target exists or not, in the affirmative it also returns
     # a list containing all the messages exchanged between him and target
     def targetExists(self, targetUser):
@@ -75,7 +85,7 @@ class InstaProfile:
     def returnConversation(self, targetUser, conversationsList):
         adjustLen = len(targetUser) + 1
         convListLen = len(conversationsList)
-        with open(targetUser+'-CNV.txt', 'w') as convTxtFile, open(targetUser+'-CNV.html', 'w') as convHtmlFile:
+        with open(targetUser+'-CNV.txt', 'w') as convTxtFile, open('./frontend/'+targetUser+'-CNV.html', 'w') as convHtmlFile:
             convHtmlFile.write( toHTML.initHeader(targetUser) )
             for i in range(convListLen):
                 conversation = conversationsList[i]
@@ -83,14 +93,15 @@ class InstaProfile:
 
                 date_ymd = '-1' #Initialsing it so the if statement will be
                 #triggered for the first iteration of the for loop
+
                 # iterate through a list in reverse
                 for convItem in conversation:
                     if convItem['sender'] == self.currentUserName:
                         sender = 'X'
-                        posMsg = 'left'
+                        posMsg = 'right'
                     else:
                         sender = convItem['sender']
-                        posMsg = 'right'
+                        posMsg = 'left'
 
                     try:
                         msg = convItem['text']
@@ -106,22 +117,9 @@ class InstaProfile:
                         convHtmlFile.write( toHTML.dateSeperator(str(date_ymd)))
                     convLine = sender.ljust(adjustLen)+': '+ str(msg)
                     convTxtFile.write(convLine + '\n')
-                    convHtmlFile.write( toHTML.writeMsg(str(posMsg), str(msg), date_time) )
+                    convHtmlFile.write( toHTML.writeMsg(str(posMsg), str(msg), str(date_time)) )
             convHtmlFile.write( toHTML.closeHTML() )
         print('Conversation with %s is created.' %(targetUser))
 
-
-
 if __name__ == '__main__':
-    changeDir()
-    currentUser = InstaProfile()
-    targetUser = input('Type your target user: ')
-    userFound, conversationsList = currentUser.targetExists(targetUser)
-    if userFound == True:
-        currentUser.returnConversation(targetUser, conversationsList)
-    else:
-        print('"%s" is not found :(' % (targetUser))
-
-    resCU = input('Create close users?[y/N]')
-    if resCU == 'y':
-        currentUser.showCloseUsers()
+    main()

@@ -1,17 +1,13 @@
-def initHeader():
+def initHeader(targetUser):
     header = """
         <!DOCTYPE html>
         <html lang="en">
 
         <head>
             <meta charset="UTF-8">
-            <title>Chat app</title>
-            <link rel="stylesheet" href="style.css">
+            <title>"""+targetUser+"""</title>
+            <link rel="stylesheet" href="./style.css">
         </head>
-
-        <!--This is for refreshing the page everytime I make a change-->
-        <script type="text/javascript" src="http://livejs.com/live.js"></script>
-
         <!--Fonts-->
         <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap" rel="stylesheet">
 
