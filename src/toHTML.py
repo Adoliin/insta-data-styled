@@ -1,11 +1,11 @@
 def initHeader(targetUser):
-    header = """
+    header = f"""
         <!DOCTYPE html>
         <html lang="en">
 
         <head>
             <meta charset="UTF-8">
-            <title>"""+targetUser+"""</title>
+            <title>{targetUser}</title>
             <link rel="stylesheet" href="./style.css">
         </head>
         <!--Fonts-->
@@ -26,28 +26,28 @@ def closeHTML():
 
 def writeMsg(posMsg, msg, sentDate):
     if posMsg == 'left':
-        msgBubble = """
+        msgBubble = f"""
             <div class="message-container msg-container-left">
                 <div class="msg-left">
                     <p class="msg-text">
-                        """+msg+"""
+                        {msg}
                     </p>
                 </div>
                 <div class="sent-date">
-                    """+sentDate+"""
+                    {sentDate}
                 </div>
             </div>
         """
     if posMsg == 'right':
-        msgBubble = """
+        msgBubble = f"""
         <div class="message-container msg-container-right">
             <div class="sent-date">
-                """+sentDate+"""
+                {sentDate}
             </div>
-         
+
             <div class="msg-right">
                 <p class="msg-text">
-                    """+msg+"""
+                    {msg}
                 </p>
             </div>
         </div>
@@ -55,9 +55,9 @@ def writeMsg(posMsg, msg, sentDate):
     return msgBubble
 
 def dateSeperator(date):
-    dateSepHTML = """
+    dateSepHTML = f"""
         <div class="date-seperator">
-            *-------------------- """+date+""" --------------------*
+            *-------------------- {date} --------------------*
         </div>
     """
     return dateSepHTML
