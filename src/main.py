@@ -54,6 +54,7 @@ def initDirs():
     cnvDir = os.path.join(os.getcwd(), 'conversations')
     textDir = os.path.join(cnvDir, 'text-format')
     webDir = os.path.join(cnvDir, 'web-format')
+    styleCssPath  = os.path.join(cnvDir, 'style.css')
 
     if not os.path.exists(cnvDir):
         os.mkdir(cnvDir)
@@ -61,6 +62,9 @@ def initDirs():
         os.mkdir(textDir)
     if not os.path.exists(webDir):
         os.mkdir(webDir)
+    if not os.path.exists(styleCssPath):
+        with open(styleCssPath, 'w') as styleFile:
+            styleFile.write(toHTML.styleCss)
     return cnvDir, textDir, webDir
 
 def getTargetUsername(participants, currentUser):
@@ -100,17 +104,17 @@ def getUsername(jsonData):
 
 def get_ctu(e):
     return e['created_at']
-def getConversation(currentUsername, targetUser, conversationsList):
-    if len(targetUser) > len(currentUsername):
+def getConversation(currentUser, targetUser, conversationsList):
+    if len(targetUser) > len(currentUser):
         adjustLen = len(targetUser) + 1
     else:
-        adjustLen = len(currentUsername) + 1
+        adjustLen = len(currentUser) + 1
     convListLen = len(conversationsList)
 
     path_textFormat = os.path.join(cnvDir, 'text-format', f'{targetUser}.txt')
     path_webFormat = os.path.join(cnvDir, 'web-format', f'{targetUser}.html')
     with open(path_textFormat, 'w') as convTxtFile, open(path_webFormat, 'w') as convHtmlFile:
-        convHtmlFile.write( toHTML.initHeader(targetUser) )
+        convHtmlFile.write( toHTML.initHeader(currentUser, targetUser) )
         for i in range(convListLen):
             #Initialsing it so the if statement will be
             #triggered for the first iteration of the for loop
@@ -120,12 +124,12 @@ def getConversation(currentUsername, targetUser, conversationsList):
             conversation.sort(key=get_ctu)
             # iterate through a list in reverse
             for convItem in conversation:
-                if convItem['sender'] == currentUsername:
-                    sender = currentUsername
-                    posMsg = 'right'
+                if convItem['sender'] == currentUser:
+                    sender = currentUser
+                    posMsg = 'left'
                 else:
                     sender = convItem['sender']
-                    posMsg = 'left'
+                    posMsg = 'right'
 
                 try:
                     msg = convItem['text']
