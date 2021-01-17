@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "msgparser"
+name = "insta-data-styled"
 version = "0.1.0"
 description = ""
 authors = ["Adolin <benmeft0@gamil.com>"]
